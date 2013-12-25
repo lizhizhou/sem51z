@@ -31,6 +31,7 @@ extern void wr_com(unsigned char Cmd);
 extern void wr_data(unsigned char ucData);
 extern unsigned char rd_data(void);
 extern void set_address(int address);
+//extern void set_coordinate(unsigned char X,unsigned char Y);
 
 //Local value extern
 static unsigned char show_charater_number;
@@ -113,18 +114,32 @@ void set_address(int address)
 void T6963_clear_graph()             //清图形显示RAM
 {
   	unsigned int i;
-  	wr_com_2data(Set_Address_Pointer,0x00,0x03);// 置图形区首指针
+  	wr_com_2data(Set_Address_Pointer,0x00,0x03);// 置图形区首指针		   0x03/0x04
   	wr_com(Set_Data_Auto_Write);           	    // 自动写
   	for(i=0;i<=22*64;i++)            // 对128×64点阵液晶清屏
   	{
    		wr_data(0x00);               // 写数据
   	}
   	wr_com(Auto_Reset);              // 自动写结束
-}								
+}						
+
+void T6963_clear_text_special(void)             //清文本特征显示RAM
+{
+  	unsigned char i;
+  	wr_com_2data(Set_Address_Pointer,0x00,0x08);// 置文本区首指针
+  	wr_com(Set_Data_Auto_Write);           // 自动写
+  	for(i=0;i<=22*8;i++)                 // 对128×64点阵液晶清屏
+  	{
+  		wr_data(0x00);              // 写数据
+  	}
+  	wr_com(Auto_Reset);           // 自动写结束
+    show_charater_number=0;
+}
 
 void T6963_lcd_clr()
 {
     T6963_clear_text();
+	T6963_clear_text_special();
   	T6963_clear_graph();
 }
 
@@ -148,7 +163,7 @@ void T6963_init_lcd()                       // LCD 初始化
   	wr_com(Display_Mode|Test_on_Graphic_on);                 // 显示开关设置,文本显示启用，图形显示启用，光标显示禁止，光标闪烁禁止
     T6963_clear_text();
   	T6963_clear_graph();
-	T6963_clear_graph();
+	T6963_clear_text_special();
 }
 void T6963_draw_point(char x,char y)
 {
@@ -164,26 +179,6 @@ void T6963_erase_point(char x,char y)
     command=Bit_Reset|(5-(x%6));
 	set_address(0x0300+x/6+y*22);
 	wr_com(command);
-}
-void T6963_printc(unsigned char *table,unsigned char X,unsigned char Y,unsigned char size)
-{
-  	unsigned char i,count,length;
-  	unsigned int address;
-  	length=(size*size)>>3;
-  	count=size>>3;                             //Size/8得出一个汉字一行的字节数
-  	set_address(address=0x0300+Y*count*128+X*count);                    //置地址指针
-  	wr_com(Set_Data_Auto_Write);                 //自动写
-  	for(i=0;i<length;i++)
-  	{
-     	    if(i>1&&(i%count==0))                   //显示完count个字节即Size个象素点后换行
-     	    {
-       		wr_com(Auto_Reset);            //关自动写
-       		set_address(address+=16);                                   //置地址指针
-       		wr_com(Set_Data_Auto_Write);            //自动写
-      	    }
-     	    wr_data(table[i]);
-   	}
-  	wr_com(Auto_Reset);                 //关自动写
 }
 
 #if FS==1
@@ -277,3 +272,55 @@ int T6963_printf(const char *format,...)
 	va_end( ap );
 	return chars;
 }
+
+/**************************光标闪烁函数************************************************/
+/* 功能描述:            在指定的字符位置(x,y)显示光标                             */
+/* 入口参数:            横坐标x,纵坐标y,形状shape(0-7)   */
+/**************************************************************************************/
+void Open_Cursor (char x,char y,char shape)
+{
+
+  	wr_com(0x9f);                     	//显示开关设置，文本显示启用，图形显示启用，光标显示禁止
+				             			// ---光标禁止     0x9c  // ---光标显示     0x9e// ---光标闪烁     0x9f
+  wr_com(Coursor_1_Line + shape);       // 光标形状
+  wr_com_2data(Set_Corsor_Pointer,x,y);	//	光标定位
+}
+/**************************关闭光标函数************************************************/
+/* 功能描述:            关闭光标显示                             */
+/* 入口参数:           ?无                                                          */
+/**************************************************************************************/
+void NO_Cursor (void)
+{
+  wr_com(0x9c);                     //  ---光标禁止     0x9c 
+}
+
+/********************************************************************************************/
+/*功能描述:在图形区域任意位置画出一条水平线                                                  */
+/*入口参数:X表示直线的横坐标起始位置,Y表示直线的纵坐标起始位置,Length表示直线的长度*/
+/********************************************************************************************/
+void Draw_horizon(unsigned char X,unsigned char Y,unsigned char Length)
+{ 
+  unsigned char i;
+  for(i=0;i<Length;i++)
+   T6963_draw_point(X+i,Y);
+}
+/********************************************************************************************/
+/*功能描述:在图形区域任意位置画出一条水平线                                                  */
+/*入口参数:X表示直线的横坐标起始位置,Y表示直线的纵坐标起始位置,Length表示直线的长度*/
+/********************************************************************************************/
+void Draw_vertical(unsigned char X,unsigned char Y,unsigned char Length)
+{ 
+  unsigned char i;
+  for(i=0;i<Length;i++)
+  T6963_draw_point(X,Y+i);
+}
+/********************************************************************************************/
+/*功能描述:设定文本的当前坐标                                                  */
+/*入口参数:X表示横坐标 Y表示纵坐标*/
+/********************************************************************************************/
+void set_coordinate(unsigned char X,unsigned char Y)
+{
+  show_charater_number=X+Y*21;
+}
+
+

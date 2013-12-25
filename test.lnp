@@ -1,0 +1,12 @@
+"STARTUP.obj",
+"main.obj",
+"T6963.obj",
+"uart.obj",
+"ADC0.obj",
+"DAC.obj",
+"delay.obj",
+"init.obj",
+"PNL_30A.obj",
+"key_map.obj" 
+TO "test" 
+RAMSIZE(256) 
