@@ -136,7 +136,7 @@
             <RestoreToolbox>1</RestoreToolbox>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>9</TargetSelection>
+          <TargetSelection>-1</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -395,6 +395,11 @@
               <FileName>key_map.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\key_map.c</FilePath>
+            </File>
+            <File>
+              <FileName>brushlessmotor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\brushlessmotor.c</FilePath>
             </File>
           </Files>
         </Group>
