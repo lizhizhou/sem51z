@@ -26,15 +26,13 @@ void itoaTest(unsigned int num,char str[]);
 
 void main (void) 
 {
-
 	char t;
-	char param[4][4]={0,0,1,0,1,0,0,0,0,0,3,0,3,0,0,0};
 	bit run_status=0;
 	char cursor_pos=2;
-	unsigned int cur_time1,cur_time2,cur_speed1,cur_speed2;
+	xdata unsigned int cur_time1,cur_time2,cur_speed1,cur_speed2;
 	char m,n;
-	char temp_a[4][4];
-
+	xdata char temp_a[4][4];
+	char param[4][4]={0,0,1,0,1,0,0,0,0,0,3,0,3,0,0,0};
 	WDTCN = 0xDE;                       // Disable Watchdog timer
 	WDTCN = 0xAD;
 	
