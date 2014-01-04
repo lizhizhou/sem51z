@@ -21,7 +21,17 @@
 #define PWM_frequent1  XBYTE[MOTOER_BASE+7]
 #define PWM_frequent2  XBYTE[MOTOER_BASE+8]
 #define PWM_frequent3  XBYTE[MOTOER_BASE+9]
-float get_speed()
+void brushless_motor_init()
+{
+	int frequent  = 5000;
+ 	PWM_frequent0 = frequent%256;
+	PWM_frequent1 = (frequent/256)%256;
+	PWM_frequent2 = (frequent/256/256)%256;
+	PWM_frequent3 = (frequent/256/256/256)%256;
+	FB = 0;
+	BRAKE = 0;
+}
+unsigned long get_speed()
 {
 	long frequent, frequent1;
 	float result;
@@ -29,7 +39,7 @@ float get_speed()
 	frequent = f0+ (long)f1*256 + (long)f2*256*256 + (long)f3*256*256*256;
 	frequent1 = f4+ f5*256 + (long)f6*256*256 + (long)f7*256*256*256;
 	result = frequent*40004600.0/frequent1-1;
-	return result;
+	return (unsigned long)result /4 * 60;
 }
 
 void set_speed(unsigned long speed)
@@ -39,3 +49,8 @@ void set_speed(unsigned long speed)
 	PWM_width2 = (speed/256/256)%256;
 	PWM_width3 = (speed/256/256/256)%256;
 } 
+
+void brake()
+{
+	BRAKE = 1;
+}
