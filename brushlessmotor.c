@@ -1,4 +1,5 @@
 #include <absacc.h>
+#include "math.h"
 #define SPEED_BASE 0xe080
 #define f0     XBYTE[SPEED_BASE]
 #define f1     XBYTE[SPEED_BASE+1]
@@ -42,12 +43,35 @@ unsigned long get_speed()
 	return (unsigned long)result /4 * 60;
 }
 
+void set_pwm(unsigned long pwm)
+{
+	PWM_width0 = pwm%256;
+	PWM_width1 = (pwm/256)%256;
+	PWM_width2 = (pwm/256/256)%256;
+	PWM_width3 = (pwm/256/256/256)%256;
+}
+
+unsigned long get_pwm()
+{
+	unsigned long pwm;
+	pwm = PWM_width0;
+	pwm += PWM_width1 * 256;
+	pwm += PWM_width2 * 256 * 256;
+	pwm += PWM_width3 * 256 * 256 * 256;
+	return pwm;
+}
+
 void set_speed(unsigned long speed)
 {
-	PWM_width0 = speed%256;
-	PWM_width1 = (speed/256)%256;
-	PWM_width2 = (speed/256/256)%256;
-	PWM_width3 = (speed/256/256/256)%256;
+	unsigned long delta;
+	do 
+	{
+		delta = get_speed() - speed;
+		if(delta > 0)
+			set_pwm(get_pwm() + delta * 100);
+		else
+			set_pwm(get_pwm() - delta * 100);
+	} while ( abs(delta) > 20);
 } 
 
 void brake()

@@ -57,7 +57,6 @@ void main (void)
 	EA =1;                              // Enable Interrupt	
 	//Set_DAC_Frequent(1000);	
 	brushless_motor_init();
-	set_speed(0x00000000);
 
  /****************界面初始化**********************/
 	 T6963_lcd_clr();
@@ -128,7 +127,7 @@ void main (void)
 				else cur_time2--;
 			  }
 			  if(cur_time1==0 && cur_time2==0 )   run_status=0;  //运行结束，判断退出
-			  set_speed(0x8fffffff);		
+			  set_speed(1000);		
 			  t = PNL_30A_Key_return(); 				//运行状态，其他按键都失效，只有stop和Esc按键有效
 			  switch(t)
 			  {

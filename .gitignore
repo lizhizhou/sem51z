@@ -63,6 +63,7 @@ local.properties
 *.OBJ
 *.__i
 *.hex
+*.M51
 .builds
 *.dotCover
 
