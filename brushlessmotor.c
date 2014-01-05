@@ -1,15 +1,16 @@
 #include <absacc.h>
 #include "math.h"
 #define SPEED_BASE 0xe080
-#define f0     XBYTE[SPEED_BASE]
-#define f1     XBYTE[SPEED_BASE+1]
-#define f2     XBYTE[SPEED_BASE+2]
-#define f3     XBYTE[SPEED_BASE+3]
-#define f4     XBYTE[SPEED_BASE+4]
-#define f5     XBYTE[SPEED_BASE+5]
-#define f6     XBYTE[SPEED_BASE+6]
-#define f7     XBYTE[SPEED_BASE+7]
-#define start  XBYTE[SPEED_BASE+8]
+#define reset  XBYTE[SPEED_BASE]
+#define ready  XBYTE[SPEED_BASE+1]
+#define f0     XBYTE[SPEED_BASE+2]
+#define f1     XBYTE[SPEED_BASE+3]
+#define f2     XBYTE[SPEED_BASE+4]
+#define f3     XBYTE[SPEED_BASE+5]
+#define f4     XBYTE[SPEED_BASE+6]
+#define f5     XBYTE[SPEED_BASE+7]
+#define f6     XBYTE[SPEED_BASE+8]
+#define f7     XBYTE[SPEED_BASE+9]
 
 #define MOTOER_BASE 0xe060
 #define FB			   XBYTE[MOTOER_BASE]
@@ -36,7 +37,9 @@ unsigned long get_speed()
 {
 	long frequent, frequent1;
 	float result;
-	start = 1;
+	reset = 1;
+	reset = 0;
+	while(!ready);
 	frequent = f0+ (long)f1*256 + (long)f2*256*256 + (long)f3*256*256*256;
 	frequent1 = f4+ f5*256 + (long)f6*256*256 + (long)f7*256*256*256;
 	result = frequent*40004600.0/frequent1-1;
