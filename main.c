@@ -46,7 +46,7 @@ void main (void)
     //ADC0_Init ();                       // Init ADC0
 	//DAC0_Init();						// Init DAC0
     //DAC1_Init();						// Init DAC1
-	TIMER4_Init(SYSCLK/SAMPLE_RATE_DAC);// Use Time4 as DAC trigger
+	//TIMER4_Init(SYSCLK/SAMPLE_RATE_DAC);// Use Time4 as DAC trigger
 
 	SFRPAGE = CONFIG_PAGE;              // P4 is on SFR Page F
 	SFRPAGE = LEGACY_PAGE;
@@ -109,6 +109,13 @@ void main (void)
 							cur_time1=cur_time2=0;
 							for(m=0;m<4;m++){cur_time1=cur_time1*10+param[0][m];cur_time2=cur_time2*10+param[2][m];}
 							for(m=0;m<4;m++)  for(n=0;n<4;n++)	temp_a[m][n]=param[m][n]; 
+							for(m=0;m<4;m++)
+							{
+								cur_speed1=cur_speed1*10+param[1][m];
+								cur_speed2=cur_speed2*10+param[3][m];
+							}
+							start();
+							set_speed(3000);
 							break;	
 					default: break;							
 				  }
@@ -122,17 +129,21 @@ void main (void)
 			  if(cur_time1+cur_time2>0)		 //倒计时运行阶段
 			  {
 			  	delay_ms(1000);
-			  	if(cur_time1>0)
+			  	if(cur_time1>0){
 			  		cur_time1--;
-				else cur_time2--;
+					if(cur_time1 == 0)
+					set_speed(cur_speed2);
+				}
+				else {	
+					cur_time2--;
+				}
 			  }
-			  if(cur_time1==0 && cur_time2==0 )   run_status=0;  //运行结束，判断退出
-			  set_speed(1000);		
+			  if(cur_time1==0 && cur_time2==0 )   run_status=0; brake(); //运行结束，判断退出	
 			  t = PNL_30A_Key_return(); 				//运行状态，其他按键都失效，只有stop和Esc按键有效
 			  switch(t)
 			  {
 			  	case 6:
-				case 12:	run_status=0;break;
+				case 12:	run_status=0; brake();break;
 				default: break;
 			  }
 		   }
