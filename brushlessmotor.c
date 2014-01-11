@@ -65,6 +65,7 @@ unsigned long get_pwm()
 	return pwm;
 }
 
+#define MAX_SPEED 3200
 #define MAX_DELTA 1000
 #define P 100000
 void set_speed(unsigned long speed)
@@ -72,6 +73,8 @@ void set_speed(unsigned long speed)
 	long delta;
 	unsigned long pwm;
 	unsigned long current_pwm;
+	set_pwm(0xffffffff/MAX_SPEED * speed);
+	delay_ms(100);
 	do 
 	{
 		delta = speed - get_speed();
