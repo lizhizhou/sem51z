@@ -108,14 +108,15 @@ void main (void)
 					case 25:run_status=1;
 							cur_time1=cur_time2=0;
 							for(m=0;m<4;m++){cur_time1=cur_time1*10+param[0][m];cur_time2=cur_time2*10+param[2][m];}
-							for(m=0;m<4;m++)  for(n=0;n<4;n++)	temp_a[m][n]=param[m][n]; 
+							for(m=0;m<4;m++)  for(n=0;n<4;n++)	temp_a[m][n]=param[m][n];
+							cur_speed1 = cur_speed2 = 0; 
 							for(m=0;m<4;m++)
 							{
 								cur_speed1=cur_speed1*10+param[1][m];
 								cur_speed2=cur_speed2*10+param[3][m];
 							}
 							start();
-							set_speed(3000);
+							set_speed(cur_speed1);
 							break;	
 					default: break;							
 				  }
@@ -138,7 +139,10 @@ void main (void)
 					cur_time2--;
 				}
 			  }
-			  if(cur_time1==0 && cur_time2==0 )   run_status=0; brake(); //运行结束，判断退出	
+			  if(cur_time1==0 && cur_time2==0 ){
+			     run_status=0; 
+				 brake(); //运行结束，判断退出
+			  }	
 			  t = PNL_30A_Key_return(); 				//运行状态，其他按键都失效，只有stop和Esc按键有效
 			  switch(t)
 			  {

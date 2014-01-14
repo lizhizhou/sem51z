@@ -65,7 +65,7 @@ unsigned long get_pwm()
 	return pwm;
 }
 
-#define MAX_SPEED 3200
+#define MAX_SPEED 3000
 #define MAX_DELTA 1000
 #define P 100000
 void set_speed(unsigned long speed)
@@ -75,20 +75,20 @@ void set_speed(unsigned long speed)
 	unsigned long current_pwm;
 	set_pwm(0xffffffff/MAX_SPEED * speed);
 	delay_ms(100);
-	do 
-	{
-		delta = speed - get_speed();
-		current_pwm = get_pwm();
-		if (delta > MAX_DELTA)
-			delta = MAX_DELTA;
-		else if (delta < -MAX_DELTA)
-			delta = -MAX_DELTA;
-		if( delta > 0 && (0xfffffffff - delta * P) < current_pwm)
-			 pwm = 0xfffffffff;
-		else
-			pwm = current_pwm + delta * P;
-		set_pwm(pwm);
-	} while ( abs(delta) > 100);
+//	do 
+//	{
+//		delta = speed - get_speed();
+//		current_pwm = get_pwm();
+//		if (delta > MAX_DELTA)
+//			delta = MAX_DELTA;
+//		else if (delta < -MAX_DELTA)
+//			delta = -MAX_DELTA;
+//		if( delta > 0 && (0xfffffffff - delta * P) < current_pwm)
+//			 pwm = 0xfffffffff;
+//		else
+//			pwm = current_pwm + delta * P;
+//		set_pwm(pwm);
+//	} while ( abs(delta) > 100);
 } 
 
 void brake()
