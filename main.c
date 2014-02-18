@@ -141,13 +141,13 @@ void main (void)
 			  }
 			  if(cur_time1==0 && cur_time2==0 ){
 			     run_status=0; 
-				 brake(); //运行结束，判断退出
+				 set_speed(0); //运行结束，判断退出
 			  }	
 			  t = PNL_30A_Key_return(); 				//运行状态，其他按键都失效，只有stop和Esc按键有效
 			  switch(t)
 			  {
 			  	case 6:
-				case 12:	run_status=0; brake();break;
+				case 12:	run_status=0; set_speed(0);break;
 				default: break;
 			  }
 		   }

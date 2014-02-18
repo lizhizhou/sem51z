@@ -44,7 +44,7 @@ unsigned long get_speed()
 	return (unsigned long)result /4 * 60;
 }
 
-#define PWM_MINI 30
+#define PWM_MINI 0
 void set_pwm(unsigned long pwm)
 {
 	if(pwm < 0xFFFFFFFF / 100 * PWM_MINI)
@@ -73,6 +73,8 @@ void set_speed(unsigned long speed)
 	long delta;
 	unsigned long pwm;
 	unsigned long current_pwm;
+	if(speed > MAX_SPEED)
+		speed = MAX_SPEED;
 	set_pwm(0xffffffff/MAX_SPEED * speed);
 	delay_ms(100);
 //	do 
