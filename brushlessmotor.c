@@ -73,9 +73,20 @@ void set_speed(unsigned long speed)
 	long delta;
 	unsigned long pwm;
 	unsigned long current_pwm;
-	if(speed > MAX_SPEED)
-		speed = MAX_SPEED;
-	set_pwm(0xffffffff/MAX_SPEED * speed);
+	if(speed > 4000)
+		speed = 4000;
+	if(speed == 0)
+		set_pwm(0x0);
+	else if (speed <= 1000)
+	{
+		speed = speed + 800;
+		set_pwm(0xffffffff/MAX_SPEED * speed );	
+	}
+	else if(speed > 1000)
+	{
+		speed = speed * 0.4 + 1400;
+		set_pwm(0xffffffff/MAX_SPEED * speed);
+	}
 	delay_ms(100);
 //	do 
 //	{
